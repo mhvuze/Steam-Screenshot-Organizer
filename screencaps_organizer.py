@@ -5,26 +5,27 @@ import requests
 from bs4 import BeautifulSoup
 
 
-def organize_steam_screencaps():
-    def get_app_name(steam_app_id):
-        print 'retrieving name for steam app', steam_app_id
-        try:
-            soup = BeautifulSoup(
-                requests.get('https://steamdb.info/app/' + steam_app_id).content, 'html.parser')
-            name = soup.find('td', itemprop='name').string
+def get_app_name(steam_app_id):
+    print 'retrieving name for steam app with ID', steam_app_id
+    try:
+        soup = BeautifulSoup(
+            requests.get('https://steamdb.info/app/' + steam_app_id).content, 'html.parser')
+        name = soup.find('td', itemprop='name').string
 
-            # replace illegal characters with an underscore
-            for c in ['\\', '/', ':', '"', ',', '*', '?', '<', '>', '|']:
-                name = name.replace(c, '_')
+        # replace illegal characters with an underscore
+        for c in ['\\', '/', ':', '"', ',', '*', '?', '<', '>', '|']:
+            name = name.replace(c, '_')
 
-            return name
-        except requests.exceptions.RequestException:
-            print 'error obtaining name for', steam_app_id
-            return None
+        return name
+    except requests.exceptions.RequestException:
+        print 'error obtaining name for', steam_app_id
+        return None
 
+
+def organize_steam_screencaps(path):
     pattern = re.compile(r'^(\d{6})_(\d{14}|\d{4}-\d{2}-\d{2})_(\d+)\.png$')
 
-    path = r'C:\Users\Blake\Pictures\screencaps\Steam'
+    path = os.path.expanduser(path)
 
     app_names = {}
     # load app IDs and Names from file, if one exists
@@ -74,30 +75,9 @@ def organize_steam_screencaps():
         names_storage_file.close()
 
 
-def organize_vlc_screencaps():
-    pattern = re.compile(r'^(.+)-(\d{5}).png$')
-
-    path = r'C:\Users\Blake\Pictures\screencaps\VLC'
-
-    for filename in os.listdir(path):
-        file_path = os.path.join(path, filename)
-
-        if os.path.isdir(file_path):
-            continue
-
-        match = re.match(pattern, filename)
-
-        if match:
-            title = match.group(1)
-            image_number = match.group(2)
-
-            new_path = os.path.join(path, title, image_number + '.png')
-
-            os.renames(file_path, new_path)
-    return
-
-
 def clean_empty_directories(path):
+    path = os.path.expanduser(path)
+
     # return None if path is not a directory
     if not os.path.isdir(path):
         return
@@ -120,7 +100,6 @@ def clean_empty_directories(path):
 
 
 if __name__ == '__main__':
-    organize_steam_screencaps()
-    organize_vlc_screencaps()
-    print 'pruning screencaps folder for empty directories'
-    clean_empty_directories(r'C:\Users\Blake\Pictures\screencaps\16')
+    organize_steam_screencaps(r'~\Pictures\screencaps\Steam')
+    print 'pruning steam screencaps folder for empty directories'
+    clean_empty_directories(r'~\Pictures\screencaps\Steam')
