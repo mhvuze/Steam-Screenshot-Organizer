@@ -29,16 +29,16 @@ def organize_steam_screencaps(path):
 
     app_names = {}
     # load app IDs and Names from file, if one exists
-    names_storage_path = os.path.join(path, 'app names dictionary.txt')
-    if os.path.exists(names_storage_path):
+    storage_path = os.path.join(path, 'app names dictionary.txt')
+    if os.path.exists(storage_path):
         names_storage_pattern = re.compile(r'^(.+)  :\|:  (.+)$')
-        for line in open(names_storage_path, 'r'):
+        for line in open(storage_path, 'r'):
             match = re.match(names_storage_pattern, line)
             if match:
                 app_names[match.group(1)] = match.group(2)
         del names_storage_pattern
 
-    update_file = False  # this will be made True if new steam app names are fetched
+    update_storage_file = False  # this will be made True if new steam app names are fetched
 
     for filename in os.listdir(path):
         file_path = os.path.join(path, filename)
@@ -54,7 +54,7 @@ def organize_steam_screencaps(path):
             if app_id not in app_names:
                 app_names[app_id] = get_app_name(app_id)
                 if app_names[app_id] is not None:
-                    update_file = True
+                    update_storage_file = True
 
             if app_names[app_id] is None:
                 continue
@@ -66,13 +66,13 @@ def organize_steam_screencaps(path):
 
             os.renames(file_path, new_path)
 
-    if update_file:
+    if update_storage_file:
         # save app IDs and Names to file
         print 'saving app names to file...'
-        names_storage_file = open(names_storage_path, 'w')
+        storage_file = open(storage_path, 'w')
         for key in app_names:
-            names_storage_file.write(key + '  :|:  ' + app_names[key] + '\n')
-        names_storage_file.close()
+            storage_file.write(key + '  :|:  ' + app_names[key] + '\n')
+        storage_file.close()
 
 
 def clean_empty_directories(path):
