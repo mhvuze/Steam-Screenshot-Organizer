@@ -10,8 +10,7 @@ def organize_steam_screencaps():
         print 'retrieving name for steam app', steam_app_id
         try:
             soup = BeautifulSoup(
-                requests.get('https://steamdb.info/app/' + steam_app_id)
-                    .content, 'html.parser')
+                requests.get('https://steamdb.info/app/' + steam_app_id).content, 'html.parser')
             name = soup.find('td', itemprop='name').string
 
             # replace illegal characters with an underscore
@@ -37,7 +36,8 @@ def organize_steam_screencaps():
             if match:
                 app_names[match.group(1)] = match.group(2)
         del names_storage_pattern
-        # print app_names
+
+    update_file = False  # this will be made True if new steam app names are fetched
 
     for filename in os.listdir(path):
         file_path = os.path.join(path, filename)
@@ -52,6 +52,8 @@ def organize_steam_screencaps():
 
             if app_id not in app_names:
                 app_names[app_id] = get_app_name(app_id)
+                if app_names[app_id] is not None:
+                    update_file = True
 
             if app_names[app_id] is None:
                 continue
@@ -63,11 +65,13 @@ def organize_steam_screencaps():
 
             os.renames(file_path, new_path)
 
-    # save app IDs and Names to file
-    names_storage_file = open(names_storage_path, 'w')
-    for key in app_names:
-        names_storage_file.write(key + '  :|:  ' + app_names[key] + '\n')
-    names_storage_file.close()
+    if update_file:
+        # save app IDs and Names to file
+        print 'saving app names to file...'
+        names_storage_file = open(names_storage_path, 'w')
+        for key in app_names:
+            names_storage_file.write(key + '  :|:  ' + app_names[key] + '\n')
+        names_storage_file.close()
 
 
 def organize_vlc_screencaps():
