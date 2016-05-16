@@ -78,8 +78,12 @@ def organize_steam_screenshots(path):
         # build destination path for the image
         new_path = os.path.join(path, app_names[app_id], filename)
 
-        # move the image
-        os.renames(file_path, new_path)
+        try:
+            # move the image
+            os.renames(file_path, new_path)
+            print 'successfully moved', filename
+        except OSError:
+            print 'there was an error moving', filename
 
     # if a new steam app name has been retrieved, save all of the app ID's and corresponding names to file
     if update_storage_file:
