@@ -1,3 +1,4 @@
+import argparse
 import os
 import re
 
@@ -100,6 +101,12 @@ def clean_empty_directories(path):
 
 
 if __name__ == '__main__':
-    organize_steam_screencaps(r'~\Pictures\screencaps\Steam')
+    parser = argparse.ArgumentParser()
+    parser.add_argument('path', type=str, help='Location of the Steam screencaps directory.'
+                                               ' If contains spaces, surround with double quotes')
+
+    args = vars(parser.parse_args())
+
+    organize_steam_screencaps(args['path'])
     print 'pruning steam screencaps folder for empty directories'
-    clean_empty_directories(r'~\Pictures\screencaps\Steam')
+    clean_empty_directories(args['path'])
