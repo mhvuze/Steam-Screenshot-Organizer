@@ -24,8 +24,8 @@ def get_app_name(steam_app_id):
         return None
 
 
-def organize_steam_screencaps(path):
-    # regular expression pattern for screencap filenames
+def organize_steam_screenshots(path):
+    # regular expression pattern for screenshot filenames
     pattern = re.compile(r'^(\d{6})_(\d{14}|\d{4}-\d{2}-\d{2})_(\d+)\.png$')
 
     # expand the path from ~/ format
@@ -44,7 +44,7 @@ def organize_steam_screencaps(path):
 
     update_storage_file = False  # this will be made True if new steam app names are fetched
 
-    # cycle through each item in the steam screencaps folder
+    # cycle through each item in the steam screenshots folder
     for filename in os.listdir(path):
         file_path = os.path.join(path, filename)
 
@@ -118,11 +118,11 @@ def clean_empty_directories(path):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('path', type=str, help='Location of the Steam screencaps directory.'
+    parser.add_argument('path', type=str, help='Location of the Steam screenshots directory.'
                                                ' If contains spaces, surround with double quotes')
 
     args = vars(parser.parse_args())
 
-    organize_steam_screencaps(args['path'])
-    print 'pruning steam screencaps folder for empty directories'
+    organize_steam_screenshots(args['path'])
+    print 'pruning steam screenshots folder for empty directories'
     clean_empty_directories(args['path'])
