@@ -81,7 +81,7 @@ def organize_steam_screenshots(path):
         try:
             # move the image
             os.renames(file_path, new_path)
-            print 'successfully moved', filename
+            print 'successfully moved', filename, 'to "' + app_names[app_id] + '"'
         except OSError:
             print 'there was an error moving', filename
 
