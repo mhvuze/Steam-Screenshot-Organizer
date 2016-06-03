@@ -93,40 +93,7 @@ def organize_steam_screenshots(path):
             storage_file.write(key + '  :|:  ' + app_names[key] + '\n')
         storage_file.close()
 
-
-# remove empty directories under the given path
-def clean_empty_directories(path):
-    # expand the path from ~/ format
-    path = os.path.expanduser(path)
-
-    # return None if path is not a directory
-    if not os.path.isdir(path):
-        return
-
-    # create list of items found in given directory
-    path_items = os.listdir(path)
-
-    # if directory is empty, delete it
-    if len(path_items) == 0:
-        print '"' + path + '" is empty. Removing...'
-        try:
-            os.removedirs(path)
-        except OSError:
-            print 'could not remove "' + path + '"'
-
-    # if directory is not empty, recurse for each item in directory
-    else:
-        for item in path_items:
-            clean_empty_directories(os.path.join(path, item))
-
-
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('path', type=str, help='Location of the Steam screenshots directory.'
-                                               ' If contains spaces, surround with double quotes')
-
-    args = vars(parser.parse_args())
-
-    organize_steam_screenshots(args['path'])
-    print 'pruning steam screenshots folder for empty directories'
-    clean_empty_directories(args['path'])
+    path = '.'
+    organize_steam_screenshots(path)
+    print 'Done.'
