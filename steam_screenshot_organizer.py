@@ -15,8 +15,8 @@ def get_app_name(steam_app_id):
         name = soup.find('td', itemprop='name').string
 
         # replace illegal characters with an underscore
-        for c in ['\\', '/', ':', '"', ',', '*', '?', '<', '>', '|']:
-            name = name.replace(c, '_')
+        for c in ['\\', '/', ':', '"', ',', '*', '?', '<', '>', '|', u"\u2122", u"\u00AE"]:
+            name = name.replace(c, '')
 
         return name
     except requests.exceptions.RequestException:
@@ -26,14 +26,14 @@ def get_app_name(steam_app_id):
 
 def organize_steam_screenshots(path):
     # regular expression pattern for screenshot filenames
-    pattern = re.compile(r'^(\d{6})_(\d{14}|\d{4}-\d{2}-\d{2})_(\d+)\.png$')
+    pattern = re.compile(r'^(\d{1,6})_(\d{14}|\d{4}-\d{2}-\d{2})_(\d+)\.png$')
 
     # expand the path from ~/ format
     path = os.path.expanduser(path)
 
     app_names = {}
     # load app IDs and Names from file, if one exists
-    storage_path = os.path.join(path, 'app names dictionary.txt')
+    storage_path = os.path.join(path, 'AppID_list.txt')
     if os.path.exists(storage_path):
         names_storage_pattern = re.compile(r'^(.+)  :\|:  (.+)$')
         for line in open(storage_path, 'r'):
